@@ -1,11 +1,16 @@
-const { ApolloServer, mergeTypeDefs, mergeResolvers, loadFilesSync } = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
 const { db } = require('./db/mongoConnect')
-const resolvers = require('./resolvers/user')
-const typeDefs = require('./typeDefs/user')
+const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge")
+const { loadFilesSync } = require("@graphql-tools/load-files")
+const path = require('path')
 require('dotenv').config()
 
 //connect to mongoDB
 db()
+
+// will automatically merges any additional typeDefs
+const typeDefs = mergeTypeDefs(loadFilesSync(path.join(__dirname, './typeDefs'))) 
+const resolvers = mergeResolvers(loadFilesSync(path.join(__dirname, './resolvers')))
 
 const server = new ApolloServer({
     typeDefs,
@@ -20,3 +25,4 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
     console.log(`Apollo Server ready at ${url}`)
    });
+
