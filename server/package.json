@@ -13,9 +13,11 @@
     "@graphql-tools/load-files": "^6.3.2",
     "@graphql-tools/merge": "^6.2.13",
     "apollo-server": "^2.23.0",
+    "apollo-server-express": "^2.23.0",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
+    "express": "^4.17.1",
     "graphql": "^15.5.0",
-    "mongoose": "^5.12.5",
-    "shortid": "^2.2.16"
+    "mongoose": "^5.12.5"
   }
 }

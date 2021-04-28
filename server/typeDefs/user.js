@@ -10,8 +10,9 @@ type Image {
   type User {
     _id: ID!,
     username: String
-    name: String
-    email: String
+    name: String!
+    email: String!,
+    password: String!
     images: [Image]
     about: String
     createdAt: String

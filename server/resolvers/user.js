@@ -1,5 +1,3 @@
-
-const shortid = require('shortid')
 //const { authCheck } = require('../helpers/auth')
 const User = require('../models/User')
 
@@ -20,14 +18,16 @@ const allUsers = async(parent, args, {req}) => await User.find({})
 
 
 const userCreate = async (parent, args, { req }) => {
-
+    const { username, email, password } = req.body.variables.input
     //const currentUser = await authCheck(req)
   
-    //const user = await User.findOne({ email: currentUser.email })
+   // const user = await User.findOne({ email: currentUser.email })
 
-    return user ? user :  new User({   // if user is in database return user, if not add user to database and then return
-      email: currentUser.email,
-      username: shortid.generate()
+    //return user ? user : 
+     return new User({   // if user is in database return user, if not add user to database and then return
+      email,
+      username,
+      password
     }).save()
 
 }
