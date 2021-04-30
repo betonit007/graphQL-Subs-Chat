@@ -1,14 +1,13 @@
 const { gql } = require('apollo-server-express')
 //const { authCheck } = require('../helpers/auth')
-const { findByIdAndDelete } = require('../models/Post')
 const Post = require('../models/Post')
 const User = require('../models/User')
 
+const NEW_POST = "NEW_POST"
 //mutation for creation of a post
-const postCreate = async (parent, args, { req }) => {      //parent mutation type
-    console.log('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++', req.body)
-    if (args.input.content.trim() === "") throw new Error('Content is required')
+const postCreate = async (parent, args, { req, pubsub }) => {      //parent mutation type
 
+    if (args.input.content.trim() === "") throw new Error('Content is required')
     //const currentUser = await authCheck(req)
     
     const currentUser = req.headers.email
@@ -22,6 +21,8 @@ const postCreate = async (parent, args, { req }) => {      //parent mutation typ
     }).save()
 
     newPost.populate("postedBy", "_id username")
+    console.log(pubsub)
+    pubsub.publish(NEW_POST, {newPost})
 
     return newPost
 }
@@ -77,6 +78,12 @@ const postDelete = async (parent, args, { req }) => {
     return deletedPost
 }
 
+const postMade = {
+    subscribe: (parent, args, { pubsub }) => {
+        pubsub.asyncIterator(NEW_POST)
+    }
+}
+
 
 module.exports = {
     Query: {
@@ -88,5 +95,8 @@ module.exports = {
         postCreate,
         postUpdate,
         postDelete
+    },
+    Subscription: {
+      postMade
     }
 }
