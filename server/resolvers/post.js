@@ -9,7 +9,7 @@ const postCreate = async (parent, args, { req, pubsub }) => {      //parent muta
 
     if (args.input.content.trim() === "") throw new Error('Content is required')
     //const currentUser = await authCheck(req)
-    
+
     const currentUser = req.headers.email
     const currentUserMongoId = await User.findOne({
         email: currentUser
@@ -21,8 +21,8 @@ const postCreate = async (parent, args, { req, pubsub }) => {      //parent muta
     }).save()
 
     newPost.populate("postedBy", "_id username")
-    console.log(pubsub)
-    pubsub.publish(NEW_POST, {newPost})
+    console.log('pubsub within postCreate resolver', pubsub)
+    pubsub.publish("NEW_POST", { postMade: newPost })
 
     return newPost
 }
@@ -79,9 +79,7 @@ const postDelete = async (parent, args, { req }) => {
 }
 
 const postMade = {
-    subscribe: (parent, args, { pubsub }) => {
-        pubsub.asyncIterator(NEW_POST)
-    }
+    subscribe: () => pubsub.asyncIterator(["NEW_POST"])
 }
 
 
@@ -95,8 +93,5 @@ module.exports = {
         postCreate,
         postUpdate,
         postDelete
-    },
-    Subscription: {
-      postMade
     }
 }
