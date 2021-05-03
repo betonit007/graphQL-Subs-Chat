@@ -9,7 +9,6 @@ const path = require('path')
 const app = express()
 app.use(express.json({ limit: '50mb' }));
 require('dotenv').config()
-
 //connect to mongoDB
 db()
 
